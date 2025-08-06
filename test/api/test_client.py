@@ -1,6 +1,6 @@
 import pytest
 
-class TestClient:
+class APIClientTests:
 
     def test_read_root(self, client):
         response = client.get("/")

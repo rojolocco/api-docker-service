@@ -1,15 +1,15 @@
 services:
   api-vps:
     container_name: api-vps
-    image: ghcr.io/rojolocco/api-docker-service:0.1.5
+    image: ghcr.io/rojolocco/api-docker-service:0.1.6
     env_file:
       - .env
     volumes:
       - api_data:/app/data
     networks:
       - traefik_network
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"
     restart: unless-stopped
 
 volumes:
