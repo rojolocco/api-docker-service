@@ -11,6 +11,10 @@ wheels/
 
 # env
 .env
+.env.dev
 
 # test
 .pytest_cache/
+
+# docker
+docker-compose.dev.yaml

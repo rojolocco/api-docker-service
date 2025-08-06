@@ -11,10 +11,11 @@ ENV UV_COMPILE_BYTECODE=1 \
 # Set work directory
 WORKDIR /app
 
-# Install the project into `/app`
+# Copy dependency files
+COPY pyproject.toml uv.lock ./
+
+# Install dependencies first
 RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --frozen --no-install-project --no-dev
 
 # Copy the application code and install the project
@@ -25,6 +26,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # Production stage
 FROM python:3.13-slim
 
+# Install uv in production stage
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
 # Set environment variables for production
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -32,7 +36,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PATH="/app/.venv/bin:$PATH"
 
 # Create non-root user for security
-RUN groupadd -r appuser && useradd -r -g appuser appuser
+RUN groupadd -r appuser && useradd -r -g appuser appuser && \
+    mkdir -p /home/appuser/.cache && \
+    chown -R appuser:appuser /home/appuser
 
 # Set work directory
 WORKDIR /app

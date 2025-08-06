@@ -1,9 +1,19 @@
 services:
-  fastapi:
-    build: .
-    container_name: fastapi_app
-    ports:
-      - "8000:8000"
-    environment:
-      - API_ENV=production
+  api-vps:
+    container_name: api-vps
+    image: ghcr.io/rojolocco/api-docker-service:0.1.4
+    env_file:
+      - .env
+    volumes:
+      - api_data:/app/data
+    networks:
+      - traefik_network
     restart: unless-stopped
+
+volumes:
+  api_data:
+    driver: local
+
+networks:
+  traefik_network:
+    external: true
