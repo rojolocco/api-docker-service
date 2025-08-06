@@ -26,9 +26,21 @@ Un servicio API basado en FastAPI optimizado para despliegue en Docker y orquest
 ```text
 api-docker-service/
 ├── app/                    # Código fuente de la aplicación
-│   └── main.py             # Punto de entrada de la API
+│   ├── main.py             # Punto de entrada de la API
+│   ├── core/               # Núcleo de la aplicación
+│   │   ├── config.py       # Configuraciones
+│   │   ├── middleware.py   # Middlewares
+│   │   └── utils.py        # Utilidades
+│   ├── db/                 # Configuración de base de datos
+│   └── api/                # Módulos de API
+│       └── v1/             # Versión 1 de API
+│           ├── agents/     # Funcionalidad para agentes
+│           ├── automation/ # Funcionalidad para automatización
+│           ├── frontend/   # Endpoints para frontend
+│           └── storage/    # Funcionalidad para almacenamiento
 ├── test/                   # Pruebas unitarias
 │   ├── api/                # Pruebas específicas de API
+│   │   └── test_client.py  # Pruebas de cliente API
 │   ├── conftest.py         # Configuración de pytest
 │   └── test_main.py        # Pruebas principales
 ├── docker-compose.dev.yaml # Configuración para desarrollo
