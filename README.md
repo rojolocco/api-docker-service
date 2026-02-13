@@ -26,28 +26,52 @@ Un servicio API basado en FastAPI optimizado para despliegue en Docker y orquest
 ```text
 api-docker-service/
 ├── app/                    # Código fuente de la aplicación
+│   ├── __init__.py
 │   ├── main.py             # Punto de entrada de la API
 │   ├── core/               # Núcleo de la aplicación
+│   │   ├── __init__.py
 │   │   ├── config.py       # Configuraciones
 │   │   ├── middleware.py   # Middlewares
 │   │   └── utils.py        # Utilidades
 │   ├── db/                 # Configuración de base de datos
+│   │   └── __init__.py
+│   ├── models/             # Modelos de datos
+│   │   └── __init__.py
+│   ├── services/           # Lógica de negocio y servicios
+│   │   └── __init__.py
+│   ├── utils/              # Utilidades de la aplicación
+│   │   └── __init__.py
 │   └── api/                # Módulos de API
 │       └── v1/             # Versión 1 de API
+│           ├── __init__.py
 │           ├── agents/     # Funcionalidad para agentes
+│           │   ├── __init__.py
+│           │   ├── routes.py
+│           │   └── schemas.py
 │           ├── automation/ # Funcionalidad para automatización
+│           │   ├── __init__.py
+│           │   ├── routes.py
+│           │   └── schemas.py
 │           ├── frontend/   # Endpoints para frontend
+│           │   ├── __init__.py
+│           │   ├── routes.py
+│           │   └── schemas.py
 │           └── storage/    # Funcionalidad para almacenamiento
+│               ├── __init__.py
+│               ├── routes.py
+│               └── schemas.py
 ├── test/                   # Pruebas unitarias
-│   ├── api/                # Pruebas específicas de API
-│   │   └── test_client.py  # Pruebas de cliente API
+│   ├── __init__.py
 │   ├── conftest.py         # Configuración de pytest
-│   └── test_main.py        # Pruebas principales
+│   ├── test_main.py        # Pruebas principales
+│   └── api/                # Pruebas específicas de API
+│       ├── __init__.py
+│       └── test_client.py  # Pruebas de cliente API
 ├── docker-compose.dev.yaml # Configuración para desarrollo
 ├── docker-compose.yaml     # Configuración para producción
 ├── Dockerfile              # Definición multi-stage para Docker
 ├── pyproject.toml          # Dependencias y configuración del proyecto
-└── uv.lock                 # Archivo de bloqueo de dependencias
+└── LICENSE                 # Licencia del proyecto
 ```
 
 ## Instalación y Ejecución

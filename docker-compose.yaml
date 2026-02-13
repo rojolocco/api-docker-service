@@ -1,13 +1,13 @@
 services:
   api-vps:
     container_name: api-vps
-    image: ghcr.io/rojolocco/api-docker-service:0.2.0
+    image: ghcr.io/rojolocco/api-docker-service:0.3.0
     env_file:
       - .env
     volumes:
       - api_data:/app/data
     networks:
-      - traefik_network
+      - internal_network
     expose:
       - 8000
     restart: unless-stopped
@@ -17,5 +17,5 @@ volumes:
     driver: local
 
 networks:
-  traefik_network:
-    external: true
+  internal_network:
+    driver: bridge

@@ -1,10 +1,10 @@
 [project]
 name = "api-docker-service"
-version = "0.2.0"
+version = "0.3.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = [
-    "fastapi[standard]>=0.116.1",
-    "pytest>=8.4.1",
-]
+dependencies = ["fastapi[standard]>=0.116.1"]
+
+[dependency-groups]
+dev = ["pytest>=8.4.1"]
