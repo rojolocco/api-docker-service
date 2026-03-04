@@ -56,10 +56,10 @@ docker-compose*.yml
 docker-compose*.yaml
 
 # Documentation and metadata
-README.md
 LICENSE
 CHANGELOG.md
 *.md
+!README.md
 
 # Test files (exclude from production build)
 test/

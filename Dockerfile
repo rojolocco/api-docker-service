@@ -17,6 +17,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project --no-dev
 
 # Copy app code and install project
+COPY README.md ./
 COPY ./app ./app
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev

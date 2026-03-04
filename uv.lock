@@ -34,7 +34,7 @@ wheels = [
 
 [[package]]
 name = "api-docker-service"
-version = "0.4.2"
+version = "0.4.3"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
