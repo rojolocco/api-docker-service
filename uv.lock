@@ -35,7 +35,7 @@ wheels = [
 [[package]]
 name = "api-docker-service"
 version = "0.4.2"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "pydantic-settings" },

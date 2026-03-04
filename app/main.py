@@ -25,11 +25,6 @@ app = FastAPI(
 # ---------------------------------------------------------------------------
 
 
-@app.get("/")
+@app.get("/", tags=["Root"])
 async def root() -> dict[str, str]:
     return {"message": "Hello Datapulse!!"}
-
-
-@app.get("/health", tags=["ops"])
-async def health() -> dict[str, str]:
-    return {"status": "ok", "env": settings.API_ENV}
