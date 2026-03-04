@@ -99,58 +99,58 @@ jobs:
   #         echo "docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest" >> $GITHUB_STEP_SUMMARY
   #         echo '```' >> $GITHUB_STEP_SUMMARY
   
-  # create-release:
-  #   needs: test
-  #   runs-on: ubuntu-22.04
-  #   permissions:
-  #     contents: write
+  create-release:
+    needs: test
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
     
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       
-  #     - name: Extract version
-  #       id: get-version
-  #       run: |
-  #         VERSION=$(grep -Po '(?<=^version = ")[^"]*' pyproject.toml | head -1)
-  #         echo "version=$VERSION" >> $GITHUB_OUTPUT
-  #         echo "Extracted version: $VERSION"
+      - name: Extract version
+        id: get-version
+        run: |
+          VERSION=$(grep -Po '(?<=^version = ")[^"]*' pyproject.toml | head -1)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VERSION"
       
-  #     - name: Generate release notes
-  #       id: release-notes
-  #       run: |
-  #         echo "## 🚀 API Docker Service Release v${{ steps.get-version.outputs.version }}" > release_notes.md
-  #         echo "" >> release_notes.md
-  #         echo "### 📦 Docker Image" >> release_notes.md
-  #         echo "- Registry: ${{ env.REGISTRY }}" >> release_notes.md
-  #         echo "- Image: ${{ env.IMAGE_NAME }}" >> release_notes.md
-  #         echo "- Version: ${{ steps.get-version.outputs.version }}" >> release_notes.md
-  #         echo "" >> release_notes.md
-  #         echo "### 🐳 Pull command:" >> release_notes.md
-  #         echo '```bash' >> release_notes.md
-  #         echo "docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.get-version.outputs.version }}" >> release_notes.md
-  #         echo "docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest" >> release_notes.md
-  #         echo '```' >> release_notes.md
-  #         echo "" >> release_notes.md
+      - name: Generate release notes
+        id: release-notes
+        run: |
+          echo "## 🚀 API Docker Service Release v${{ steps.get-version.outputs.version }}" > release_notes.md
+          echo "" >> release_notes.md
+          echo "### 📦 Docker Image" >> release_notes.md
+          echo "- Registry: ${{ env.REGISTRY }}" >> release_notes.md
+          echo "- Image: ${{ env.IMAGE_NAME }}" >> release_notes.md
+          echo "- Version: ${{ steps.get-version.outputs.version }}" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "### 🐳 Pull command:" >> release_notes.md
+          echo '```bash' >> release_notes.md
+          echo "docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.get-version.outputs.version }}" >> release_notes.md
+          echo "docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest" >> release_notes.md
+          echo '```' >> release_notes.md
+          echo "" >> release_notes.md
           
-  #         # Add commit history since last tag if there are previous tags
-  #         if git describe --tags --abbrev=0 &> /dev/null; then
-  #           LAST_TAG=$(git describe --tags --abbrev=0)
-  #           echo "### 📝 Changes since $LAST_TAG" >> release_notes.md
-  #           git log --pretty=format:"* %s" $LAST_TAG..HEAD >> release_notes.md
-  #         else
-  #           echo "### 📝 Initial Release" >> release_notes.md
-  #           git log --pretty=format:"* %s" >> release_notes.md
-  #         fi
+          # Add commit history since last tag if there are previous tags
+          if git describe --tags --abbrev=0 &> /dev/null; then
+            LAST_TAG=$(git describe --tags --abbrev=0)
+            echo "### 📝 Changes since $LAST_TAG" >> release_notes.md
+            git log --pretty=format:"* %s" $LAST_TAG..HEAD >> release_notes.md
+          else
+            echo "### 📝 Initial Release" >> release_notes.md
+            git log --pretty=format:"* %s" >> release_notes.md
+          fi
       
-  #     - name: Create GitHub Release
-  #       uses: softprops/action-gh-release@v1
-  #       with:
-  #         name: "Release v${{ steps.get-version.outputs.version }}"
-  #         tag_name: "v${{ steps.get-version.outputs.version }}"
-  #         body_path: release_notes.md
-  #         draft: false
-  #         prerelease: false
-  #         token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "Release v${{ steps.get-version.outputs.version }}"
+          tag_name: "v${{ steps.get-version.outputs.version }}"
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
