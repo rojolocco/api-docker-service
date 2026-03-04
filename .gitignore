@@ -18,3 +18,6 @@ wheels/
 
 # docker
 docker-compose.dev.yaml
+
+# ruff
+.ruff_cache/

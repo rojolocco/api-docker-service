@@ -1,10 +1,30 @@
 [project]
 name = "api-docker-service"
-version = "0.3.0"
+version = "0.4.1"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = ["fastapi[standard]>=0.116.1"]
+dependencies = [
+    "fastapi[standard]>=0.116.1",
+    "pydantic-settings>=2.12.0",
+]
 
 [dependency-groups]
-dev = ["pytest>=8.4.1"]
+dev = ["mypy>=1.19.1", "pytest>=8.4.1", "ruff>=0.15.4"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+ignore_missing_imports = true

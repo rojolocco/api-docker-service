@@ -1,63 +1,50 @@
 # Multi-stage Dockerfile for FastAPI production deployment with uv
 FROM python:3.13-slim AS builder
 
-# Install uv
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+# Pin uv version for reproducibility
+COPY --from=ghcr.io/astral-sh/uv:0.6.3 /uv /bin/uv
 
-# Set environment variables for the build stage
+# Build-time env: compile bytecode, copy mode, no Python downloads
 ENV UV_COMPILE_BYTECODE=1 \
-    UV_LINK_MODE=copy
+    UV_LINK_MODE=copy \
+    UV_PYTHON_DOWNLOADS=never
 
-# Set work directory
 WORKDIR /app
 
-# Copy dependency files
+# Install dependencies (separate layer — cached unless pyproject/lockfile change)
 COPY pyproject.toml uv.lock ./
-
-# Install dependencies first
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project --no-dev
 
-# Copy the application code and install the project
+# Copy app code and install project
 COPY ./app ./app
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev
 
-# Production stage
+# ---------------------------------------------------------------------------
+# Production stage — no uv needed at runtime
+# ---------------------------------------------------------------------------
 FROM python:3.13-slim
 
-# Install uv in production stage
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
-
-# Set environment variables for production
+# Runtime env: activate venv via PATH, force production mode
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    API_ENV=production \
-    PATH="/app/.venv/bin:$PATH"
+    VIRTUAL_ENV=/app/.venv \
+    PATH="/app/.venv/bin:$PATH" \
+    API_ENV=production
 
-# Create non-root user for security
-RUN groupadd -r appuser && useradd -r -g appuser appuser && \
-    mkdir -p /home/appuser/.cache && \
-    chown -R appuser:appuser /home/appuser
+# Non-root user
+RUN groupadd -r appuser && useradd -r -g appuser appuser
 
-# Set work directory
 WORKDIR /app
 
-# Copy the virtual environment from the builder stage
+# Copy only the virtual environment and app code from builder
 COPY --from=builder --chown=appuser:appuser /app/.venv /app/.venv
-
-# Copy application code
 COPY --chown=appuser:appuser ./app ./app
 
-# Switch to non-root user
 USER appuser
 
-# Expose port
 EXPOSE 8000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/')" || exit 1
-
-# Start the FastAPI app with uv run in production mode
-CMD ["uv", "run", "fastapi", "run", "app/main.py", "--host", "0.0.0.0", "--port", "8000"]
+# fastapi CLI is installed in .venv — no uv needed
+CMD ["fastapi", "run", "app/main.py", "--host", "0.0.0.0", "--port", "8000"]

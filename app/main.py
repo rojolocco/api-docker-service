@@ -1,14 +1,35 @@
-from fastapi import FastAPI
-import os
+"""Application entry point."""
 
+from fastapi import FastAPI
+
+from app.core.config import settings
+from app.core.lifespan import lifespan
+
+# ---------------------------------------------------------------------------
+# App factory
+# ---------------------------------------------------------------------------
 
 app = FastAPI(
-    docs_url=None if os.getenv("API_ENV") == "production" else "/docs",
-    redoc_url=None if os.getenv("API_ENV") == "production" else "/redoc",
-    openapi_url=None if os.getenv("API_ENV") == "production" else "/openapi.json",
+    title=settings.API_TITLE,
+    version=settings.API_VERSION,
+    description=settings.API_DESCRIPTION,
+    docs_url="/docs" if settings.docs_enabled else None,
+    redoc_url="/redoc" if settings.docs_enabled else None,
+    openapi_url="/openapi.json" if settings.docs_enabled else None,
+    lifespan=lifespan,
 )
 
 
+# ---------------------------------------------------------------------------
+# Routes
+# ---------------------------------------------------------------------------
+
+
 @app.get("/")
-async def root():
+async def root() -> dict[str, str]:
     return {"message": "Hello Datapulse!!"}
+
+
+@app.get("/health", tags=["ops"])
+async def health() -> dict[str, str]:
+    return {"status": "ok", "env": settings.API_ENV}

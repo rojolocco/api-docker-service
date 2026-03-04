@@ -1,7 +1,7 @@
 services:
   api-vps:
     container_name: api-vps
-    image: ghcr.io/rojolocco/api-docker-service:0.3.0
+    image: ghcr.io/rojolocco/api-docker-service:0.4.1
     env_file:
       - .env
     volumes:
